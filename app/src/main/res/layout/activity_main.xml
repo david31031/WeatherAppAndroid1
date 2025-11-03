@@ -5,15 +5,99 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#C22196F3"
     tools:context=".MainActivity">
 
-    <TextView
+    <EditText
+        android:id="@+id/minTempEditText"
+        android:layout_width="401dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="44dp"
+        android:ems="10"
+        android:hint="Min Temperature"
+        android:inputType="numberSigned"
+        android:text="Name"
+        android:textAlignment="viewStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_wrapBehaviorInParent="included" />
+
+    <EditText
+        android:id="@+id/maxTempEditText"
+        android:layout_width="406dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:hint="Max Temperature"
+        android:inputType="numberSigned"
+        android:text="Name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/minTempEditText"
+        app:layout_wrapBehaviorInParent="included" />
+
+    <EditText
+        android:id="@+id/conditionEditText"
+        android:layout_width="400dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:hint=" Condition (e.g.,Sunny)"
+        android:inputType="text"
+        android:text="Name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/maxTempEditText"
+        app:layout_wrapBehaviorInParent="included" />
+
+    <Button
+        android:id="@+id/addDataButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="102dp"
+        android:layout_marginTop="17dp"
+        android:text="Add Data For Monday"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/conditionEditText" />
 
+    <TextView
+        android:id="@+id/errorTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="172dp"
+        android:layout_marginTop="8dp"
+        android:text="&quot;&quot;"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addDataButton" />
+
+    <ListView
+        android:id="@+id/daysListView"
+        android:layout_width="304dp"
+        android:layout_height="265dp"
+        android:layout_marginStart="53dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/errorTextView" />
+
+    <Button
+        android:id="@+id/clearAllButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="136dp"
+        android:layout_marginTop="8dp"
+        android:background="#C22196F3"
+        android:text="Clear All Data"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/daysListView" />
+
+    <TextView
+        android:id="@+id/averageTempTextView"
+        android:layout_width="418dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="94dp"
+        android:text="Weekly Average:-"
+        android:textAlignment="viewStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clearAllButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>
