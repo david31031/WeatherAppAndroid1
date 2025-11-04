@@ -2,6 +2,7 @@ package com.example.weatherapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
             // find all views from the layout file
             minTempEditText = findViewById(R.id.minTempEditText)
             maxTempEditText = findViewById(R.id.maxTempEditText)
@@ -59,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 processDataInput()
             }
             clearAllButton.setOnClickListener {
-                clearData()
+                clearAllData()
             }
             // handle clicking on an item in the ListView
             daysListView.setOnItemClickListener { parent, view, position, id ->
@@ -75,69 +77,99 @@ class MainActivity : AppCompatActivity() {
             }
             // set initial button text
             updateAddDataButtonText()
-        }
-        private fun processDataInput() {
-            // (Requirement:Logging)
-            Log.i("MainActivity", "Add Data button clicked.")
-            //Get text from EditTexts
-            val minTempStr = minTempEditText.text.toString()
-            val maxTempStr = maxTempEditText.text.toString()
-            val conditionStr = conditionEditText.text.toString()
+    }
+    private fun processDataInput() {
+        // (Requirement:Logging)
+        Log.i("MainActivity", "Add Data button clicked.")
+        //Get text from EditTexts
+        val minTempStr = minTempEditText.text.toString()
+        val maxTempStr = maxTempEditText.text.toString()
+        val conditionStr = conditionEditText.text.toString()
 
-            // (Requirement:Error Handling)
-            if (minTempStr.isEmpty() || maxTempStr.isEmpty() || conditionStr.isEmpty()) {
-                errorTextView.text = "Errorr: All Fields are Required."
-                log.e("InputError","User left one or more firlds empty.")
+        // (Requirement:Error Handling)
+        if (minTempStr.isEmpty() || maxTempStr.isEmpty() || conditionStr.isEmpty()) {
+            errorTextView.text = "Error: All Fields are Required."
+            Log.e("InputError","User left one or more fields empty.")
+            return
+        }
+
+        try{
+            // convert text to numbers
+            val minTemp = minTempStr.toInt()
+            val maxTemp = maxTempStr.toInt()
+            //check for logical errors
+            if (minTemp > maxTemp ) {
+                errorTextView.text = "Error: Min Temp cannot be greater than Max Temp."
+                Log.e("InputError","User entered min > max..")
                 return
             }
-
-            try{
-                // convert text to numbers
-                val minTempStr = minTempStr.toInt()
-                val maxTempStr = maxTempStr.toInt()
-                //check for logical errors
-                if (minTempStr > maxTempStr ) { errorTextView.text = "Error: Min Temp cannot be greater than Max Temp."
-                    log.e("InputError","User entered min > max..")
-                    return
-                }
-                // add data to lists
-                minTemps.add(minTempStr)
-                maxTemps.add(maxTempStr)
-                conditions.add(conditionStr)
-                // update display list
-                displayList.add("${days[currentDayIndex]}: Min $minTempStr, Max $maxTempStr, Condition $conditionStr")
-                // update ListView
-                adapter.notifyDataSetChanged()
-                // clear EditTexts
-                minTempEditText.text.clear()
-                maxTempEditText.text.clear()
-                conditionEditText.text.clear()
-                // update error text
-                errorTextView.text = ""
-                // move to next day
-                currentDayIndex = (currentDayIndex + 1) % 7
-
-
-
-
-
+            // add data to lists
+            minTemps.add(minTemp)
+            maxTemps.add(maxTemp)
+            conditions.add(conditionStr)
+            // update display list
+            displayList.add("${days[currentDayIndex]}: Min $minTemp, Max $maxTemp, Condition $conditionStr")
+            // update ListView
+            adapter.notifyDataSetChanged()
+            // clear EditTexts
+            minTempEditText.text.clear()
+            maxTempEditText.text.clear()
+            conditionEditText.text.clear()
+            // update error text
+            errorTextView.text = ""
+            // move to next day
+            currentDayIndex++
+            if (currentDayIndex< days.size) {
+                updateAddDataButtonText()
+            } else {
+                addDataButton.text = "All data entered"
+                addDataButton.isEnabled = false
+                minTempEditText.isEnabled = false
+                maxTempEditText.isEnabled = false
+                conditionEditText.isEnabled = false
+                // calculate and display average
+                calculateAndDisplayAverage()
             }
-
-
-
-
-
-
-
-
+        }  catch (e: NumberFormatException) {
+            errorTextView.text =
+                "Error: Invalid input. Please enter valid numbers for temperature."
+            Log.e("InputError", "User entered invalid input..")
         }
     }
-
-    private fun processDataInput() {
-        TODO("Not yet implemented")
+    private fun calculateAndDisplayAverage() {
+        var totalDailyAverage = 0.0
+        for (i in 0 until minTemps.size) {
+            val dailyAverage = (minTemps[i] + maxTemps[i]) / 2.0
+            totalDailyAverage += dailyAverage
+        }
+        val weeklyAverage = totalDailyAverage / minTemps.size
+        averageTempTextView.text = String.format("Weekly Average: %.1f", weeklyAverage)
+        Log.i("Calculation", "Weekly average calculated: $weeklyAverage")
     }
-
-    private fun clearData() {
-        TODO("Not yet implemented")
+    // function to clear data and allow re-input
+    private fun clearAllData() {
+        minTemps.clear()
+        maxTemps.clear()
+        conditions.clear()
+        displayList.clear()
+        // reset UI elements
+        adapter.notifyDataSetChanged()
+        // clear ListView
+        currentDayIndex = 0
+        updateAddDataButtonText()
+        errorTextView.text = ""
+        averageTempTextView.text = "Weekly Average: -"
+        // re-enable inputs
+        addDataButton.isEnabled = true
+        minTempEditText.isEnabled = true
+        maxTempEditText.isEnabled = true
+        conditionEditText.isEnabled = true
+        // logging
+        Log.w("DataReset", "All Data has been cleared by the user.")
+    }
+    private fun updateAddDataButtonText() {
+        if (currentDayIndex < days.size) {
+            addDataButton.text = "Add Data For ${days[currentDayIndex]}"
+        }
     }
 }
