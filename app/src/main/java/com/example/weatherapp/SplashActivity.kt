@@ -25,9 +25,10 @@ class SplashActivity : AppCompatActivity() {
         btnStart.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+            finish()
         }
         btnExit.setOnClickListener {
-            finish()
+            finishAffinity()
         }
     }
 }

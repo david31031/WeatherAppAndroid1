@@ -137,6 +137,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun calculateAndDisplayAverage() {
+        if (minTemps.isEmpty()) {
+            averageTempTextView.text = "Weekly Average: -"
+            Log.i("Calculation", "No data to calculate average.")
+            return
+        }
         var totalDailyAverage = 0.0
         for (i in 0 until minTemps.size) {
             val dailyAverage = (minTemps[i] + maxTemps[i]) / 2.0
@@ -159,6 +164,9 @@ class MainActivity : AppCompatActivity() {
         updateAddDataButtonText()
         errorTextView.text = ""
         averageTempTextView.text = "Weekly Average: -"
+        minTempEditText.text.clear()
+        maxTempEditText.text.clear()
+        conditionEditText.text.clear()
         // re-enable inputs
         addDataButton.isEnabled = true
         minTempEditText.isEnabled = true
